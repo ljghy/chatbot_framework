@@ -9,7 +9,7 @@ human_name = ""
 AI_name = ""
 
 
-@func_timeout.func_set_timeout(10)
+@func_timeout.func_set_timeout(20)
 def get_response(prompt):
     return openai.Completion.create(
         model="text-davinci-003",
