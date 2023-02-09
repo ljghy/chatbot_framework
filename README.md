@@ -3,9 +3,9 @@
 A wrapper of OpenAI's GPT-3 API.
 
 ## Usage
-+ Install `openai` package
++ Dependencies
 ```
-pip install openai
+pip install openai func_timeout
 ```
 
 + Set `OPENAI_API_KEY` environment variable with your own private key.
