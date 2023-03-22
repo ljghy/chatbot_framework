@@ -4,6 +4,5 @@
     "AI_name": "Python chatbot",
     "memory": [],
     "max_tokens": 150,
-    "temperature": 0.9,
-    "proxies": {}
+    "temperature": 0.9
 }

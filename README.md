@@ -3,7 +3,7 @@
 ## Usage
 + Dependencies
 ```
-pip install requests func_timeout
+pip install requests func_timeout pysocks(if using socks proxies)
 ```
 
 + Set `OPENAI_API_KEY` environment variable with your own private key.
@@ -21,4 +21,17 @@ python3 ./chatbot.py ./chat_example.json
 /clear: clear current conversations and chat history.
 /prompt: print current full prompt.
 /comp: compress current conversations into chat history.
+```
+
++ Set proxies
+
+`chat_example.json`
+```
+{
+    ...,
+    "proxies": {
+        "http": "...",
+        "https": "..."
+    }
+}
 ```
