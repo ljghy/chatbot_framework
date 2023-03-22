@@ -77,9 +77,10 @@ class ChatSession:
         try:
             response = self._post_request(data)
         except (requests.exceptions.ConnectionError,
-                requests.exceptions.ConnectTimeout,
-                func_timeout.exceptions.FunctionTimedOut) as e:
+                requests.exceptions.ConnectTimeout) as e:
             return (False, repr(e))
+        except func_timeout.exceptions.FunctionTimedOut:
+            return (False, "Request time out")
         if response.status_code != 200:
             return (False,
                     RuntimeError("Request failed with code {}".format(
@@ -105,7 +106,7 @@ class ChatSession:
                 return (False, request_response[1], 0)
 
     def compress(self, summary):
-        self.compressed_chat = "Chat history: " + summary
+        self.compressed_chat = "chat history: " + summary
         self.messages = []
 
     def _get_prompt(self) -> str:
@@ -133,10 +134,10 @@ class ChatSession:
             self.messages.pop()
         if len(self.messages) > 0:
             self.messages.pop()
-        return ("Previous message undoed.", CommandType.UNDO)
+        return ("Previous message undone.", CommandType.UNDO)
 
     def _cmd_clear(self):
-        self.compressed_chat = []
+        self.compressed_chat = ""
         self.messages = []
         return ("Chat history cleared.", CommandType.CLEAR)
 
@@ -153,7 +154,7 @@ class ChatSession:
             "role":
             "user",
             "content":
-            "Respond with a brief summary of the chat history and the conversations above without unnecessary words."
+            "Respond with a brief chronological summary of the chat history part and the conversations above without unnecessary words. The background settings should not be included. The conversations above are more important while the chat history part can be reasonably deleted."
         })
         response = self._get_response()
         self.messages.pop()
@@ -161,4 +162,4 @@ class ChatSession:
             summary = response[1]["choices"][0]["message"]["content"]
             return (summary, CommandType.COMPRESS_SUCCEEDED)
         else:
-            return ("", CommandType.COMPRESS_FAILED)
+            return ("Compression failed.", CommandType.COMPRESS_FAILED)
