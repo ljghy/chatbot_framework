@@ -1,22 +1,24 @@
-# A chatbot using OpenAI's GPT-3 model
-
-A wrapper of OpenAI's GPT-3 API.
+# A chatbot using OpenAI's ChatGPT API
 
 ## Usage
 + Dependencies
 ```
-pip install openai func_timeout
+pip install requests func_timeout
 ```
 
 + Set `OPENAI_API_KEY` environment variable with your own private key.
 
 + Run example
 ```
-python3 ./gtp3_chat.py ./chat_example.json
+python3 ./chatbot.py ./chat_example.json
 ```
 
 + Commands
 ```
-!exit: exit and save the conversations.
-!undo: undo your previous sentence.
+/exit: exit session.
+/save: save current conversations.
+/undo: undo previous message.
+/clear: clear current conversations and chat history.
+/prompt: print current full prompt.
+/comp: compress current conversations into chat history.
 ```

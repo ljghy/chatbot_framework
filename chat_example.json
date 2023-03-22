@@ -1,9 +1,9 @@
 {
-    "background": "The python chatbot knows everything about python programming language. It will answer any questions you may have. You: How do I combine arrays?\nPython chatbot: You can use the \"+\" operator.",
-    "human_name": "You",
+    "background": "The assistant knows everything about python programming language.",
+    "human_name": "User",
     "AI_name": "Python chatbot",
-    "memory": [
-        "\nYou: Hello\nPython chatbot:  Hi! How can I help?",
-        "\nYou: How do I define a function in python\nPython chatbot:  You can define a function using the def keyword followed by the function name and parameters, and then the code for the function. For example, to define a function named say_hello that takes one parameter, you would use this syntax: \n\ndef say_hello(name): \n   print(\"Hello, \" + name)"
-    ]
+    "memory": [],
+    "max_tokens": 150,
+    "temperature": 0.9,
+    "proxies": {}
 }
