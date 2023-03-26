@@ -1,5 +1,8 @@
 import sys
 from chat_session import ChatSession, CommandType
+import os
+if os.name == "posix":
+    import readline
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
