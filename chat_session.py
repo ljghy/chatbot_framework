@@ -47,7 +47,7 @@ class ChatSession:
 
         self.settings_filename = settings_filename
 
-    @func_timeout.func_set_timeout(30)
+    @func_timeout.func_set_timeout(60)
     def _post_request(self, data: dict):
         response = requests.post(
             url="https://api.openai.com/v1/chat/completions",
@@ -68,7 +68,8 @@ class ChatSession:
                 "content": self.background + self.compressed_chat
             }] + self.messages,
             "temperature":
-            self.temperature
+            self.temperature,
+            "stop": [self.human_name + ":", self.AI_name + ":"]
         }
         if self.max_tokens > 0:
             data["max_tokens"] = self.max_tokens
@@ -77,9 +78,10 @@ class ChatSession:
         try:
             response = self._post_request(data)
         except (requests.exceptions.ConnectionError,
-                requests.exceptions.ConnectTimeout,
-                func_timeout.exceptions.FunctionTimedOut) as e:
+                requests.exceptions.ConnectTimeout) as e:
             return (False, repr(e))
+        except func_timeout.exceptions.FunctionTimedOut:
+            return (False, "Request time out")
         if response.status_code != 200:
             return (False,
                     RuntimeError("Request failed with code {}".format(
@@ -105,7 +107,7 @@ class ChatSession:
                 return (False, request_response[1], 0)
 
     def compress(self, summary):
-        self.compressed_chat = "Chat history: " + summary
+        self.compressed_chat = "chat history: " + summary
         self.messages = []
 
     def _get_prompt(self) -> str:
@@ -133,10 +135,10 @@ class ChatSession:
             self.messages.pop()
         if len(self.messages) > 0:
             self.messages.pop()
-        return ("Previous message undoed.", CommandType.UNDO)
+        return ("Previous message undone.", CommandType.UNDO)
 
     def _cmd_clear(self):
-        self.compressed_chat = []
+        self.compressed_chat = ""
         self.messages = []
         return ("Chat history cleared.", CommandType.CLEAR)
 
@@ -153,7 +155,7 @@ class ChatSession:
             "role":
             "user",
             "content":
-            "Respond with a brief summary of the chat history and the conversations above without unnecessary words."
+            "Respond with a brief chronological summary of the chat history and the new conversations above without unnecessary words. The summary has only one paragraph and doesn't contain labels. The background settings should not be included. The new conversations are more important than chat history."
         })
         response = self._get_response()
         self.messages.pop()
@@ -161,4 +163,4 @@ class ChatSession:
             summary = response[1]["choices"][0]["message"]["content"]
             return (summary, CommandType.COMPRESS_SUCCEEDED)
         else:
-            return ("", CommandType.COMPRESS_FAILED)
+            return ("Compression failed.", CommandType.COMPRESS_FAILED)
